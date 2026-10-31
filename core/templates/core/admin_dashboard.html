@@ -1,0 +1,32 @@
+{% extends "core/base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<div class="hero mb-4"><h2><i class="fa-solid fa-user-shield"></i> Admin Dashboard</h2><p>Manage your entire Edu System from one place.</p></div>
+<div class="row g-4 mb-4">
+  <div class="col-xl-3 col-md-6"><div class="card bg-theme1 h-100"><div class="card-body"><h6>Total Students</h6><h2>{{ stats.students }}</h2></div></div></div>
+  <div class="col-xl-3 col-md-6"><div class="card bg-theme2 h-100"><div class="card-body"><h6>Total Teachers</h6><h2>{{ stats.teachers }}</h2></div></div></div>
+  <div class="col-xl-3 col-md-6"><div class="card bg-theme3 h-100"><div class="card-body"><h6>Total Exams</h6><h2>{{ stats.exams }}</h2></div></div></div>
+  <div class="col-xl-3 col-md-6"><div class="card bg-theme4 h-100"><div class="card-body"><h6>Submissions</h6><h2>{{ stats.submissions }}</h2></div></div></div>
+</div>
+<div class="row g-4 mb-4">
+  <div class="col-lg-8"><div class="card"><div class="card-body"><h4 class="mb-3">📊 System Overview</h4><canvas id="chart" height="110"></canvas></div></div></div>
+  <div class="col-lg-4"><div class="card h-100"><div class="card-body"><h4 class="mb-3">⚡ Quick Actions</h4><div class="d-grid gap-2">
+    <a class="btn btn-primary" href="{% url 'create_exam' %}">Create New Exam</a>
+    <a class="btn btn-success" href="{% url 'manage_users' %}">Manage Users</a>
+    <a class="btn btn-primary" href="{% url 'academic_structure' %}">Academic Structure</a>
+    <a class="btn btn-outline-dark" href="{% url 'verify_results' %}">Verify Results{% if stats.awaiting_verification %} ({{ stats.awaiting_verification }}){% endif %}</a>
+    <a class="btn btn-danger" href="{% url 'reports' %}">Reports</a>
+    <a class="btn btn-warning" href="{% url 'announcements' %}">Announcements</a>
+  </div></div></div></div>
+</div>
+<div class="row g-4">
+  <div class="col-md-4"><div class="card"><div class="card-body text-center"><h5>Published Results</h5><h2>{{ stats.published }}</h2></div></div></div>
+  <div class="col-md-4"><div class="card"><div class="card-body text-center"><h5>Pending Results</h5><h2>{{ stats.pending }}</h2></div></div></div>
+  <div class="col-md-4"><div class="card"><div class="card-body text-center"><h5>Awaiting Verification</h5><h2>{{ stats.awaiting_verification }}</h2></div></div></div>
+</div>
+{{ chart|json_script:"chart-data" }}
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>new Chart(document.getElementById('chart'),{type:'bar',data:{labels:['Students','Teachers','Exams','Submissions','Published'],datasets:[{data:JSON.parse(document.getElementById('chart-data').textContent),borderRadius:10}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});</script>
+{% endblock %}

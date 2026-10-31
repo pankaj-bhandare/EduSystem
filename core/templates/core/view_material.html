@@ -1,0 +1,15 @@
+{% extends "core/base.html" %}
+{% block title %}Study Materials{% endblock %}
+{% block content %}
+<div class="hero mb-4"><h2>📚 Study Materials</h2><p>Access notes, PDFs and learning resources</p></div>
+<input id="search" class="form-control mb-4" placeholder="🔍 Search materials...">
+<div class="row">
+{% for mat in materials %}<div class="col-md-4 mb-4 material-card"><div class="card p-3 text-center">
+  <div class="mb-2"><i class="fa fa-file fa-2x text-danger"></i></div><h5>{{ mat.title }}</h5>
+  <p class="text-muted small">Uploaded by: {{ mat.uploaded_by.name|default:"—" }}<br>Course: {{ mat.course }}{% if mat.subject %}<br>Subject: {{ mat.subject }}{% endif %}</p>
+  <a href="{% url 'file_material' mat.id %}" target="_blank" class="btn btn-primary w-100 mb-2"><i class="fa fa-eye"></i> View</a>
+  <a href="{% url 'file_material' mat.id %}?download=1" class="btn btn-success w-100"><i class="fa fa-download"></i> Download</a>
+</div></div>{% empty %}<p class="text-center text-muted">No materials available. Ask an administrator to enroll you in a class.</p>{% endfor %}
+</div>
+{% endblock %}
+{% block scripts %}<script>document.getElementById('search').addEventListener('keyup',function(){const v=this.value.toLowerCase();document.querySelectorAll('.material-card').forEach(c=>c.style.display=c.innerText.toLowerCase().includes(v)?'block':'none');});</script>{% endblock %}

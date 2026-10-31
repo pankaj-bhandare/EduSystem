@@ -1,0 +1,19 @@
+{% extends "core/base.html" %}
+{% block title %}My Results{% endblock %}
+{% block content %}
+<div class="hero mb-4"><h2>📊 My Results</h2><p>Only verified, published results appear here.</p></div>
+<a href="{% url 'download_result' %}" class="btn btn-success mb-3"><i class="fa fa-download"></i> Download Result</a>
+<div class="row mb-4">
+  <div class="col-md-4"><div class="card p-3 bg-theme1 text-center"><h5>Average</h5><h2>{{ average }}</h2></div></div>
+  <div class="col-md-4"><div class="card p-3 bg-theme2 text-center"><h5>Highest</h5><h2>{{ highest }}</h2></div></div>
+  <div class="col-md-4"><div class="card p-3 bg-theme3 text-center"><h5>Total Exams</h5><h2>{{ count }}</h2></div></div>
+</div>
+<div class="card p-3"><table class="table table-bordered text-center"><thead class="table-dark"><tr><th>Exam</th><th>Marks</th><th>Grade</th><th>Remarks</th><th>Checked Paper</th></tr></thead><tbody>
+{% for r in rows %}<tr><td>{{ r.exam.title|default:"Written exam" }}</td><td>{{ r.marks|default_if_none:"-" }}</td><td>{{ r.grade|default:"-" }}</td><td>{{ r.remarks|default:"-" }}</td>
+<td>{% if r.checked_file %}<a class="btn btn-success btn-sm" target="_blank" rel="noopener" href="{% url 'file_checked' r.id %}">View Checked Paper</a>{% else %}<span class="text-muted">Not uploaded by teacher</span>{% endif %}</td></tr>
+{% empty %}<tr><td colspan="5">No results available</td></tr>{% endfor %}</tbody></table></div>
+<div class="card p-3 mt-4"><h5>📊 Performance Chart</h5><canvas id="resultChart"></canvas></div>
+{{ labels|json_script:"labels" }}{{ marks|json_script:"marks" }}
+{% endblock %}
+{% block scripts %}<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>new Chart(document.getElementById('resultChart'),{type:'bar',data:{labels:JSON.parse(document.getElementById('labels').textContent),datasets:[{label:'Marks',data:JSON.parse(document.getElementById('marks').textContent)}]},options:{scales:{y:{beginAtZero:true}}}});</script>{% endblock %}

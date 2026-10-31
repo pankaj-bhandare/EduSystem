@@ -1,0 +1,11 @@
+{% extends "core/base.html" %}
+{% block title %}Exam History{% endblock %}
+{% block content %}
+<div class="hero mb-4"><h2>📜 Exam History</h2><p>View all your past exams and performance</p></div>
+<div class="card p-3"><table class="table table-bordered text-center align-middle"><thead class="table-dark"><tr><th>Exam</th><th>Status</th><th>Marks</th><th>Remarks</th></tr></thead><tbody>
+{% for r in rows %}<tr><td>{{ r.exam.title|default:"Written exam" }}</td>
+<td><span class="badge {% if r.status == 'ABSENT' %}bg-danger{% else %}bg-primary{% endif %}">{{ r.status }}</span>{% if r.result_status == 'published' %} <span class="badge bg-success">result published</span>{% endif %}</td>
+<td>{% if r.result_status == 'published' and r.marks is not None %}<strong>{{ r.marks }}</strong>{% else %}-{% endif %}</td>
+<td>{% if r.result_status == 'published' %}{{ r.remarks|default:"-" }}{% else %}-{% endif %}</td></tr>
+{% empty %}<tr><td colspan="4">No history available</td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}

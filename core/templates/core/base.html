@@ -1,0 +1,50 @@
+{% load static %}<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Edu System{% endblock %}</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head><body class="bg-light">
+<div class="sidebar">
+  <h4 class="text-center text-white">🎓 Edu System</h4>
+  {% if user.role == 'student' %}
+    <a href="{% url 'student_dashboard' %}"><i class="fa fa-home"></i> Dashboard</a>
+    <a href="{% url 'available_exams' %}"><i class="fa fa-calendar"></i> Exams</a>
+    <a href="{% url 'view_material' %}"><i class="fa fa-book"></i> Materials</a>
+    <a href="{% url 'results' %}"><i class="fa fa-chart-bar"></i> Results</a>
+    <a href="{% url 'examcell_student' %}"><i class="fa fa-graduation-cap"></i> Examination Cell</a>
+    <a href="{% url 'history' %}"><i class="fa fa-history"></i> History</a>
+  {% elif user.role == 'teacher' %}
+    <a href="{% url 'teacher_dashboard' %}"><i class="fa fa-home"></i> Dashboard</a>
+    <a href="{% url 'upload_material' %}"><i class="fa fa-upload"></i> Upload Material</a>
+    <a href="{% url 'check_papers' %}"><i class="fa fa-file"></i> Check Papers</a>
+    <a href="{% url 'add_question' %}"><i class="fa fa-pen"></i> Questions</a>
+    <a href="{% url 'create_exam' %}"><i class="fa fa-calendar"></i> Create Exam</a>
+    <a href="{% url 'examcell_teacher' %}"><i class="fa fa-graduation-cap"></i> Examination Workspace</a>
+    <a href="{% url 'announcements' %}"><i class="fa fa-bullhorn"></i> Announcements</a>
+  {% elif user.role == 'admin' %}
+    <a href="{% url 'admin_dashboard' %}"><i class="fa fa-home"></i> Dashboard</a>
+    <a href="{% url 'manage_users' %}"><i class="fa fa-users"></i> Manage Users</a>
+    <a href="{% url 'academic_structure' %}"><i class="fa fa-sitemap"></i> Academic Structure</a>
+    <a href="{% url 'examcell_admin' %}"><i class="fa fa-graduation-cap"></i> Examination Cell</a>
+    <a href="{% url 'create_exam' %}"><i class="fa fa-calendar"></i> Create Exam</a>
+    <a href="{% url 'verify_results' %}"><i class="fa fa-shield-halved"></i> Verify Results</a>
+    <a href="{% url 'reports' %}"><i class="fa fa-chart-line"></i> Reports</a>
+    <a href="{% url 'announcements' %}"><i class="fa fa-bullhorn"></i> Announcements</a>
+  {% endif %}
+  <a href="{% url 'notifications' %}"><i class="fa fa-bell"></i> Notifications{% if unread_count %} <span class="badge bg-danger">{{ unread_count }}</span>{% endif %}</a>
+  <hr class="text-white">
+  <form method="post" action="{% url 'logout' %}">{% csrf_token %}
+    <button class="btn btn-link text-decoration-none" style="color:#D1D5DB;padding:14px 25px"><i class="fa fa-sign-out-alt"></i> Logout</button>
+  </form>
+</div>
+<div class="content">
+  <div class="topbar d-flex justify-content-between align-items-center bg-white p-2 px-3 mb-3 shadow-sm">
+    <h5 class="mb-0">Welcome, {{ user.name }}</h5><span class="badge bg-dark">{{ user.role|upper }}</span>
+  </div>
+  {% for m in messages %}<div class="alert alert-{% if m.tags == 'error' %}danger{% else %}{{ m.tags|default:'info' }}{% endif %} alert-dismissible fade show">{{ m }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}
+  {% block content %}{% endblock %}
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% block scripts %}{% endblock %}
+</body></html>

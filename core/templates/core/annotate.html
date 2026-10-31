@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Annotate paper</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+body{background:#f5f7fb;text-align:center;font-family:Arial,sans-serif;margin:0}
+.toolbar{position:sticky;top:0;background:#fff;padding:12px;z-index:1000;box-shadow:0 2px 8px #0002}
+.toolbar button,.toolbar a{margin:3px;padding:8px 12px}
+.page{position:relative;display:block;width:fit-content;max-width:98%;margin:18px auto}
+.page canvas{display:block;max-width:100%;height:auto;border:1px solid #ccc}
+.page .drawing{position:absolute;top:0;left:0;touch-action:none}
+#message{margin:12px;font-weight:bold}
+</style></head><body>
+<div class="toolbar">
+  <a href="{% url 'check_paper' sub.id %}">← Back to marking</a>
+  <button type="button" onclick="setPen()">✍️ Pen</button><button type="button" onclick="setEraser()">🧽 Eraser</button>
+  <input type="color" id="colorPicker" value="#ff0000" title="Pen colour">
+  <button type="button" onclick="undo()">↩ Undo</button><button type="button" onclick="redo()">↪ Redo</button>
+  <button type="button" onclick="clearAll()">🗑 Clear</button>
+  <button type="button" id="generateButton" onclick="generatePDF()">📄 Save checked PDF</button>
+  <div id="message" role="status"></div>
+</div>
+<div id="pdfContainer">Loading submitted paper…</div>
+{{ config|json_script:"cfg" }}
+<script>
+const cfg = JSON.parse(document.getElementById('cfg').textContent);
+const csrfToken = "{{ csrf_token }}";
+pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
+const pages=[], undoStack=[], redoStack=[];
+let currentColor="#ff0000", lineWidth=2, erasing=false;
+const message=document.getElementById("message");
+document.getElementById("colorPicker").addEventListener("input",e=>{currentColor=e.target.value;erasing=false;});
+function setPen(){erasing=false;lineWidth=2;}
+function setEraser(){erasing=true;lineWidth=12;}
+const snapshot=c=>c.toDataURL("image/png");
+function saveUndo(c){undoStack.push({page:c.dataset.page,image:snapshot(c)});if(undoStack.length>50)undoStack.shift();redoStack.length=0;}
+function restore(c,url){const ctx=c.getContext("2d");ctx.clearRect(0,0,c.width,c.height);const img=new Image();img.onload=()=>ctx.drawImage(img,0,0);img.src=url;}
+function undo(){const s=undoStack.pop();if(!s)return;const c=pages[+s.page].drawCanvas;redoStack.push({page:s.page,image:snapshot(c)});restore(c,s.image);}
+function redo(){const s=redoStack.pop();if(!s)return;const c=pages[+s.page].drawCanvas;undoStack.push({page:s.page,image:snapshot(c)});restore(c,s.image);}
+function clearAll(){pages.forEach(({drawCanvas})=>{saveUndo(drawCanvas);drawCanvas.getContext("2d").clearRect(0,0,drawCanvas.width,drawCanvas.height);});}
+function enableDrawing(canvas){
+  const ctx=canvas.getContext("2d");let drawing=false;
+  const pt=e=>{const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*canvas.width/r.width,y:(e.clientY-r.top)*canvas.height/r.height};};
+  canvas.addEventListener("pointerdown",e=>{e.preventDefault();drawing=true;canvas.setPointerCapture(e.pointerId);saveUndo(canvas);const p=pt(e);ctx.beginPath();ctx.moveTo(p.x,p.y);});
+  canvas.addEventListener("pointermove",e=>{if(!drawing)return;e.preventDefault();const p=pt(e);
+    ctx.globalCompositeOperation=erasing?"destination-out":"source-over";
+    ctx.strokeStyle=currentColor;ctx.lineWidth=lineWidth*canvas.width/canvas.getBoundingClientRect().width;
+    ctx.lineCap="round";ctx.lineJoin="round";ctx.lineTo(p.x,p.y);ctx.stroke();});
+  const stop=()=>{drawing=false;ctx.beginPath();};
+  canvas.addEventListener("pointerup",stop);canvas.addEventListener("pointercancel",stop);
+}
+function addPage(container,w,h){
+  const wrapper=document.createElement("div");wrapper.className="page";
+  const base=document.createElement("canvas"),draw=document.createElement("canvas");draw.className="drawing";
+  for(const c of [base,draw]){c.width=Math.ceil(w);c.height=Math.ceil(h);c.style.width="100%";}
+  wrapper.style.width=Math.min(w,window.innerWidth*0.96)+"px";
+  wrapper.appendChild(base);wrapper.appendChild(draw);container.appendChild(wrapper);
+  draw.style.height="100%";draw.dataset.page=String(pages.length);enableDrawing(draw);
+  const entry={baseCanvas:base,drawCanvas:draw};pages.push(entry);return entry;
+}
+async function loadPaper(){
+  const container=document.getElementById("pdfContainer");
+  try{
+    if(cfg.kind==="pdf"){
+      const pdf=await pdfjsLib.getDocument(cfg.fileUrl).promise;container.textContent="";
+      for(let n=1;n<=pdf.numPages;n++){
+        const pg=await pdf.getPage(n),vp=pg.getViewport({scale:1.5}),e=addPage(container,vp.width,vp.height);
+        await pg.render({canvasContext:e.baseCanvas.getContext("2d"),viewport:vp}).promise;
+      }
+    }else{
+      const img=new Image();await new Promise((ok,bad)=>{img.onload=ok;img.onerror=bad;img.src=cfg.fileUrl;});
+      container.textContent="";const e=addPage(container,img.naturalWidth,img.naturalHeight);
+      e.baseCanvas.getContext("2d").drawImage(img,0,0);
+    }
+    message.textContent="Paper loaded. Annotate, then save the checked PDF.";
+  }catch(err){console.error(err);message.textContent="Could not load the submitted paper.";}
+}
+async function generatePDF(){
+  if(!pages.length){message.textContent="No pages loaded.";return;}
+  const btn=document.getElementById("generateButton");btn.disabled=true;message.textContent="Generating checked PDF…";
+  try{
+    const {jsPDF}=window.jspdf;const pdf=new jsPDF({orientation:"portrait",unit:"pt",format:"a4",compress:true});
+    const PW=pdf.internal.pageSize.getWidth(),PH=pdf.internal.pageSize.getHeight(),M=18;
+    for(let i=0;i<pages.length;i++){
+      if(i>0)pdf.addPage("a4","portrait");
+      const {baseCanvas,drawCanvas}=pages[i];const m=document.createElement("canvas");m.width=baseCanvas.width;m.height=baseCanvas.height;
+      const ctx=m.getContext("2d");ctx.fillStyle="#fff";ctx.fillRect(0,0,m.width,m.height);ctx.drawImage(baseCanvas,0,0);ctx.drawImage(drawCanvas,0,0);
+      const sc=Math.min((PW-M*2)/m.width,(PH-M*2)/m.height),w=m.width*sc,h=m.height*sc;
+      pdf.addImage(m.toDataURL("image/jpeg",0.88),"JPEG",(PW-w)/2,(PH-h)/2,w,h,undefined,"FAST");
+    }
+    const fd=new FormData();fd.append("pdf",pdf.output("blob"),"checked-paper.pdf");
+    const r=await fetch(cfg.saveUrl,{method:"POST",headers:{"X-CSRFToken":csrfToken},body:fd});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok||!j.ok)throw new Error(j.error||"The server could not save the PDF.");
+    message.textContent="Checked paper saved. Go back to marking to enter the marks.";
+  }catch(err){console.error(err);message.textContent="Error: "+err.message;}
+  finally{btn.disabled=false;}
+}
+loadPaper();
+</script></body></html>

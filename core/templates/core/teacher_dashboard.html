@@ -1,0 +1,16 @@
+{% extends "core/base.html" %}
+{% block title %}Teacher Dashboard{% endblock %}
+{% block content %}
+<div class="hero mb-4"><h2>👨‍🏫 Teacher Dashboard</h2><p>Manage exams, materials and evaluate students</p></div>
+<div class="row mb-4">
+  <div class="col-md-4"><div class="card p-3 bg-theme1 text-center"><h5>My Materials</h5><h2>{{ stats.materials }}</h2></div></div>
+  <div class="col-md-4"><div class="card p-3 bg-theme2 text-center"><h5>Total Exams</h5><h2>{{ stats.exams }}</h2></div></div>
+  <div class="col-md-4"><div class="card p-3 bg-theme3 text-center"><h5>Pending Checks</h5><h2>{{ stats.pending }}</h2></div></div>
+</div>
+<div class="row g-4">
+  <div class="col-md-4"><div class="card p-3 text-center"><h4><i class="fa fa-upload"></i> Upload Material</h4><p>Add notes, PDFs, resources</p><a href="{% url 'upload_material' %}" class="btn btn-success w-100">Upload</a></div></div>
+  <div class="col-md-4"><div class="card p-3 text-center"><h4><i class="fa fa-file"></i> Check Papers</h4><p>Evaluate written exams</p><a href="{% url 'check_papers' %}" class="btn btn-danger w-100">Check</a></div></div>
+  <div class="col-md-4"><div class="card p-3 text-center"><h4><i class="fa fa-pen"></i> Add Questions</h4><p>Create MCQ questions</p><a href="{% url 'add_question' %}" class="btn btn-primary w-100">Add</a></div></div>
+  <div class="col-md-4"><div class="card p-3 text-center"><h4><i class="fa fa-calendar"></i> Create Exam</h4><p>Schedule exam &amp; upload paper</p><a href="{% url 'create_exam' %}" class="btn btn-warning w-100">Create</a></div></div>
+</div>
+{% endblock %}

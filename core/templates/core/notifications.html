@@ -1,0 +1,11 @@
+{% extends "core/base.html" %}
+{% block title %}Notifications{% endblock %}
+{% block content %}
+<h2>Notifications</h2><p class="text-muted">Academic updates for your account.</p>
+{% for n in items %}<article class="card mb-3 shadow-sm {% if not n.read_at %}border-primary{% endif %}"><div class="card-body">
+<div class="d-flex justify-content-between gap-2"><h5>{{ n.title }}</h5><small class="text-muted">{{ n.created_at|date:"d M Y, H:i" }}</small></div>
+<p class="mb-2">{{ n.message|linebreaksbr }}</p>
+<div class="d-flex justify-content-between align-items-center"><span class="badge text-bg-light">{{ n.category }} · {% if n.read_at %}Read{% else %}Unread{% endif %}</span>
+{% if not n.read_at %}<form method="post" action="{% url 'mark_notification_read' n.id %}">{% csrf_token %}<button class="btn btn-sm btn-outline-primary">Mark as read</button></form>{% endif %}</div></div></article>
+{% empty %}<div class="alert alert-info">You're all caught up. New announcements will appear here.</div>{% endfor %}
+{% endblock %}

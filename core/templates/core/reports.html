@@ -1,0 +1,16 @@
+{% extends "core/base.html" %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+<div class="hero mb-4"><h2><i class="fa-solid fa-chart-line"></i> Reports</h2><p>Review activity and performance across exams.</p></div>
+<div class="row g-3 mb-4">
+  <div class="col"><div class="card bg-theme1"><div class="card-body"><small>Students</small><h2 class="mb-0">{{ summary.students }}</h2></div></div></div>
+  <div class="col"><div class="card bg-theme2"><div class="card-body"><small>Teachers</small><h2 class="mb-0">{{ summary.teachers }}</h2></div></div></div>
+  <div class="col"><div class="card bg-theme3"><div class="card-body"><small>Exams</small><h2 class="mb-0">{{ summary.exams }}</h2></div></div></div>
+  <div class="col"><div class="card bg-theme4"><div class="card-body"><small>Submissions</small><h2 class="mb-0">{{ summary.submissions }}</h2></div></div></div>
+  <div class="col"><div class="card"><div class="card-body"><small>Published</small><h2 class="mb-0">{{ summary.published }}</h2></div></div></div>
+</div>
+<div class="card p-3"><div class="d-flex justify-content-between align-items-center mb-3"><h4 class="mb-0">Exam performance</h4>
+  <form method="post">{% csrf_token %}<input type="hidden" name="action" value="mark_absent"><button class="btn btn-outline-danger btn-sm" onclick="return confirm('Mark students with no submission as ABSENT for all exams past their upload deadline?')">Run absent check</button></form></div>
+  <div class="table-responsive"><table class="table table-hover mb-0"><thead><tr><th>Exam</th><th>Submissions</th><th>Absent</th><th>Average marks</th></tr></thead><tbody>
+  {% for e in exams %}<tr><td>{{ e.title }}</td><td>{{ e.n_sub }}</td><td>{{ e.n_absent }}</td><td>{% if e.avg_marks is None %}—{% else %}{{ e.avg_marks|floatformat:2 }}{% endif %}</td></tr>{% empty %}<tr><td colspan="4" class="text-muted text-center">No exams yet.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

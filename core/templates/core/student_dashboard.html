@@ -1,0 +1,16 @@
+{% extends "core/base.html" %}
+{% block title %}Student Dashboard{% endblock %}
+{% block content %}
+<div class="hero mb-4"><h2>Welcome to Edu System</h2><p>Manage exams, materials and results easily</p></div>
+<div class="row mb-4">
+  <div class="col-md-4"><div class="card p-3 bg-theme2 text-center"><h5>My Exams</h5><h2>{{ stats.exams }}</h2></div></div>
+  <div class="col-md-4"><div class="card p-3 bg-theme1 text-center"><h5>Submitted</h5><h2>{{ stats.submitted }}</h2></div></div>
+  <div class="col-md-4"><div class="card p-3 bg-theme4 text-center"><h5>Absent</h5><h2>{{ stats.absent }}</h2></div></div>
+</div>
+<div class="row g-4">
+  <div class="col-md-3"><div class="card p-3 text-center"><h4><i class="fa fa-book"></i> Materials</h4><a href="{% url 'view_material' %}" class="btn btn-success w-100 mt-2">Open</a></div></div>
+  <div class="col-md-3"><div class="card p-3 text-center"><h4><i class="fa fa-calendar"></i> Exams</h4><a href="{% url 'available_exams' %}" class="btn btn-warning w-100 mt-2">Open</a></div></div>
+  <div class="col-md-3"><div class="card p-3 text-center"><h4><i class="fa fa-chart-bar"></i> Results</h4><a href="{% url 'results' %}" class="btn btn-info w-100 mt-2">View</a></div></div>
+  <div class="col-md-3"><div class="card p-3 text-center"><h4><i class="fa fa-history"></i> History</h4><a href="{% url 'history' %}" class="btn btn-secondary w-100 mt-2">Open</a></div></div>
+</div>
+{% endblock %}

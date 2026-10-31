@@ -1,0 +1,11 @@
+{% extends "core/base.html" %}
+{% block title %}Verify Results{% endblock %}
+{% block content %}
+<div class="hero mb-4"><h2><i class="fa-solid fa-shield-halved"></i> Examination Verification</h2><p>Verify checked written papers before results are published to students.</p></div>
+<div class="card p-3"><div class="table-responsive"><table class="table align-middle"><thead><tr><th>Exam</th><th>Student</th><th>Marks / Grade</th><th>Teacher remarks</th><th>Papers</th><th>Action</th></tr></thead><tbody>
+{% for s in rows %}<tr><td>{{ s.exam.title|default:"Written exam" }}</td><td>{{ s.student.email }}</td><td>{{ s.marks }} / {{ s.grade }}</td><td>{{ s.remarks }}</td>
+<td><a target="_blank" href="{% url 'file_submission' s.id %}">Answer</a>{% if s.checked_file %} · <a target="_blank" href="{% url 'file_checked' s.id %}">Checked</a>{% endif %}</td>
+<td><form method="post" class="d-flex gap-2">{% csrf_token %}<input type="hidden" name="submission_id" value="{{ s.id }}">
+<button name="action" value="verify" class="btn btn-success btn-sm">Verify &amp; Publish</button><button name="action" value="return" class="btn btn-outline-secondary btn-sm">Return</button></form></td></tr>
+{% empty %}<tr><td colspan="6" class="text-center text-muted">No papers await verification.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}
