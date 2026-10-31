@@ -1,0 +1,10 @@
+{% extends "registration/auth_base.html" %}
+{% block title %}Register{% endblock %}{% block heading %}Create Account{% endblock %}
+{% block content %}
+<form method="post">{% csrf_token %}
+  {% for f in form %}{{ f }}{% for e in f.errors %}<div class="text-danger small mb-1">{{ e }}</div>{% endfor %}{% endfor %}
+  <input class="form-control mb-3" value="Student account" disabled>
+  <button class="btn btn-primary w-100">Register</button>
+</form>
+<div class="text-center mt-2"><a href="{% url 'login' %}">Already have an account?</a></div>
+{% endblock %}

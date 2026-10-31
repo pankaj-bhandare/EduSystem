@@ -1,0 +1,8 @@
+{% extends "registration/auth_base.html" %}
+{% block title %}Verify OTP{% endblock %}{% block heading %}Verify OTP{% endblock %}
+{% block content %}
+<p class="small text-muted">If an account exists for that email, a reset code has been sent.</p>
+<form method="post">{% csrf_token %}{{ form.otp }}{% for e in form.otp.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+<button class="btn btn-primary w-100">Verify OTP</button></form>
+<div class="text-center mt-3"><a href="{% url 'login' %}">Back to Login</a></div>
+{% endblock %}

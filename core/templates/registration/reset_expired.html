@@ -1,0 +1,4 @@
+{% extends "registration/auth_base.html" %}
+{% block title %}Session expired{% endblock %}{% block heading %}Reset session expired{% endblock %}
+{% block content %}<p>Password reset session expired. Please request a new reset code.</p>
+<a class="btn btn-primary w-100" href="{% url 'forgot_password' %}">Request a new code</a>{% endblock %}
