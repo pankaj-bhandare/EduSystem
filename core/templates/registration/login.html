@@ -1,0 +1,11 @@
+{% extends "registration/auth_base.html" %}
+{% block title %}Login{% endblock %}{% block heading %}Login{% endblock %}
+{% block content %}
+<form method="post">{% csrf_token %}
+  {{ form.username }}{% for e in form.username.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+  {{ form.password }}
+  <input type="hidden" name="next" value="{{ next }}">
+  <button class="btn btn-success w-100">Login</button>
+</form>
+<div class="text-center mt-2"><a href="{% url 'forgot_password' %}" class="me-3">Forgot password?</a><a href="{% url 'register' %}">Create account</a></div>
+{% endblock %}
