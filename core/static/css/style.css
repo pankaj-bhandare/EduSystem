@@ -1,0 +1,514 @@
+/* ===========================================
+   EDU SYSTEM PRO v2.0
+   Modern SaaS Design System
+   Developed for Edu System
+=========================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+:root{
+
+    --primary:#4F46E5;
+    --primary-light:#6366F1;
+
+    --success:#10B981;
+    --danger:#EF4444;
+    --warning:#F59E0B;
+    --info:#0EA5E9;
+
+    --dark:#111827;
+    --sidebar:#1E293B;
+
+    --background:#F5F7FB;
+
+    --card:#FFFFFF;
+
+    --text:#1F2937;
+    --text-light:#6B7280;
+
+    --border:#E5E7EB;
+
+    --radius:18px;
+
+    --shadow:
+        0 12px 30px rgba(0,0,0,.08);
+
+}
+
+/* ============================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+
+    font-family:'Poppins',sans-serif;
+
+    background:var(--background);
+
+    color:var(--text);
+
+    overflow-x:hidden;
+
+}
+
+/* ============================= */
+/* Scrollbar */
+/* ============================= */
+
+::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:var(--primary);
+
+    border-radius:20px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#ECECEC;
+
+}
+
+/* ============================= */
+/* Cards */
+/* ============================= */
+
+.card{
+
+    border:none;
+
+    border-radius:var(--radius);
+
+    background:var(--card);
+
+    box-shadow:var(--shadow);
+
+    transition:.35s;
+
+}
+
+.card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:
+        0 18px 40px rgba(79,70,229,.15);
+
+}
+
+/* ============================= */
+/* Buttons */
+/* ============================= */
+
+.btn{
+
+    border-radius:12px;
+
+    font-weight:600;
+
+    padding:10px 18px;
+
+    transition:.30s;
+
+}
+
+.btn:hover{
+
+    transform:translateY(-2px);
+
+}
+
+.btn-primary{
+
+    background:var(--primary);
+
+    border:none;
+
+}
+
+.btn-primary:hover{
+
+    background:var(--primary-light);
+
+}
+
+.btn-success{
+
+    background:var(--success);
+
+    border:none;
+
+}
+
+.btn-danger{
+
+    background:var(--danger);
+
+    border:none;
+
+}
+
+.btn-warning{
+
+    border:none;
+
+}
+
+.btn-info{
+
+    border:none;
+
+}
+
+/* ============================= */
+/* Sidebar */
+/* ============================= */
+
+.sidebar{
+
+    position:fixed;
+
+    left:0;
+
+    top:0;
+
+    width:260px;
+
+    height:100vh;
+
+    background:linear-gradient(180deg,#111827,#1E293B);
+
+    color:white;
+
+    overflow-y:auto;
+
+    padding:25px 0;
+
+    box-shadow:
+    10px 0 25px rgba(0,0,0,.08);
+
+    z-index:999;
+
+}
+
+.sidebar h4{
+
+    text-align:center;
+
+    font-weight:700;
+
+    margin-bottom:30px;
+
+}
+
+.sidebar a{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:14px 25px;
+
+    color:#D1D5DB;
+
+    text-decoration:none;
+
+    transition:.30s;
+
+    border-left:4px solid transparent;
+
+}
+
+.sidebar a:hover{
+
+    background:rgba(255,255,255,.08);
+
+    color:white;
+
+    border-left:4px solid var(--primary);
+
+}
+
+.sidebar a.active{
+
+    background:rgba(79,70,229,.18);
+
+    color:white;
+
+    border-left:4px solid var(--primary);
+
+}
+
+/* ============================= */
+/* Content */
+/* ============================= */
+
+.content{
+
+    margin-left:260px;
+
+    padding:30px;
+
+}
+
+/* ============================= */
+/* Hero */
+/* ============================= */
+
+.hero{
+
+    border-radius:25px;
+
+    padding:40px;
+
+    color:white;
+
+    background:
+    linear-gradient(135deg,#4F46E5,#7C3AED);
+
+    box-shadow:
+    0 20px 50px rgba(79,70,229,.25);
+
+}
+
+.hero h2{
+
+    font-weight:700;
+
+}
+
+.hero p{
+
+    opacity:.9;
+
+}
+
+/* ============================= */
+/* Statistics */
+/* ============================= */
+
+.bg-theme1{
+
+    background:linear-gradient(135deg,#2563EB,#3B82F6);
+
+    color:white;
+
+}
+
+.bg-theme2{
+
+    background:linear-gradient(135deg,#10B981,#34D399);
+
+    color:white;
+
+}
+
+.bg-theme3{
+
+    background:linear-gradient(135deg,#F59E0B,#FBBF24);
+
+    color:white;
+
+}
+
+.bg-theme4{
+
+    background:linear-gradient(135deg,#EF4444,#F87171);
+
+    color:white;
+
+}
+
+/* ============================= */
+/* Table */
+/* ============================= */
+
+.table{
+
+    background:white;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+}
+
+.table thead{
+
+    background:var(--primary);
+
+    color:white;
+
+}
+
+.table th{
+
+    border:none;
+
+}
+
+.table td{
+
+    vertical-align:middle;
+
+}
+
+/* ============================= */
+/* Forms */
+/* ============================= */
+
+.form-control{
+
+    border-radius:12px;
+
+    border:1px solid var(--border);
+
+    padding:12px;
+
+}
+
+.form-control:focus{
+
+    border-color:var(--primary);
+
+    box-shadow:
+    0 0 0 .20rem rgba(79,70,229,.15);
+
+}
+
+/* ============================= */
+/* Navbar */
+/* ============================= */
+
+.navbar{
+
+    background:white;
+
+    box-shadow:
+    0 8px 20px rgba(0,0,0,.06);
+
+}
+
+/* ============================= */
+/* Images */
+/* ============================= */
+
+img{
+
+    max-width:100%;
+
+    border-radius:15px;
+
+}
+
+/* ============================= */
+/* Footer */
+/* ============================= */
+
+footer{
+
+    margin-top:40px;
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:15px;
+
+    text-align:center;
+
+    color:#777;
+
+}
+
+/* ============================= */
+/* Badges */
+/* ============================= */
+
+.badge{
+
+    padding:8px 12px;
+
+    border-radius:20px;
+
+}
+
+/* ============================= */
+/* Animation */
+/* ============================= */
+
+.card,
+.btn,
+.sidebar a{
+
+    transition:all .30s ease;
+
+}
+
+/* ============================= */
+/* Responsive */
+/* ============================= */
+
+@media(max-width:991px){
+
+.sidebar{
+
+    width:100%;
+
+    position:relative;
+
+    height:auto;
+
+}
+
+.content{
+
+    margin-left:0;
+
+}
+
+.hero{
+
+    padding:25px;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.content{
+
+    padding:15px;
+
+}
+
+.card{
+
+    margin-bottom:15px;
+
+}
+
+.hero h2{
+
+    font-size:24px;
+
+}
+
+}
